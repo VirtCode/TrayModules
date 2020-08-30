@@ -1,6 +1,7 @@
 package ch.virt.traymodules.windowtracker;
 
 import ch.virt.traymodules.windowtracker.data.Data;
+import ch.virt.trayutils.Dialogs;
 import ch.virt.trayutils.gui.helper.ComponentFactory;
 import ch.virt.trayutils.modules.Module;
 import com.google.gson.Gson;
@@ -8,6 +9,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.internal.$Gson$Preconditions;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,7 +33,7 @@ public class Main extends Module {
     private Timer timer;
 
     public Main() {
-        super(3597, "Focus Tracker", "window.png", "This Module tracks how long which application is in your focus. Doing so you have precise analytics of how you are using your time on your computer.");
+        super(3597, "Focus Tracker", "window.png", "This Module tracks how long which application is in your focus. Doing so you have precise analytics of how you are using your time on your computer. At the moment, there is no convenient way to view the collected data. But since this project is Open Source there will soon be.");
     }
 
     @Override
@@ -89,7 +93,54 @@ public class Main extends Module {
 
     @Override
     public JPanel settingsMenu() {
-        return ComponentFactory.createGroup();
+        JPanel panel = ComponentFactory.createGroup();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JCheckBox collectTitles = ComponentFactory.createCheckBox();
+        collectTitles.setText("Save window Titles");
+        collectTitles.setSelected(this.collectTitles);
+
+        collectTitles.addActionListener(e -> {
+            this.collectTitles = collectTitles.isSelected();
+            eventBus.saveSettings();
+        });
+
+        JButton eraseData = ComponentFactory.createButton();
+        eraseData.setText("Erase previously collected Data");
+        eraseData.addActionListener(e -> {
+            data = new Data();
+            doSave();
+        });
+
+        JButton openFile = ComponentFactory.createButton();
+        openFile.setText("Open Collected Data");
+        openFile.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().open(new File(FILE));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+
+        JButton showInExplorer = ComponentFactory.createButton();
+        showInExplorer.setText("Show Data File in Explorer");
+        showInExplorer.addActionListener(e -> Desktop.getDesktop().browseFileDirectory(new File(FILE)));
+
+        panel.add(collectTitles);
+        panel.add(openFile);
+        panel.add(getPadding());
+        panel.add(showInExplorer);
+        panel.add(getPadding());
+        panel.add(eraseData);
+
+        return panel;
+    }
+
+    private JPanel getPadding(){
+        JPanel padding = ComponentFactory.createGroup();
+        padding.setMaximumSize(new Dimension(1, 6));
+        padding.setMinimumSize(new Dimension(1, 6));
+        return padding;
     }
 
     @Override

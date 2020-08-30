@@ -195,7 +195,7 @@ public class Main extends ActionModule {
         checkBox.setText("Show Instructions");
         checkBox.setSelected(showInstructions);
 
-        checkBox.addChangeListener(e -> {
+        checkBox.addActionListener(e -> {
             showInstructions = checkBox.isSelected();
             eventBus.saveSettings();
         });

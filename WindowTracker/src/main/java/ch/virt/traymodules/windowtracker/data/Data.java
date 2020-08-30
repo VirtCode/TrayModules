@@ -10,15 +10,15 @@ import java.util.Date;
  * @version 1.0
  */
 public class Data {
-    private ArrayList<ProcessData> data;
+    private ArrayList<ProcessData> data = new ArrayList<>();
 
-    public void usedProcess(int minutes, String process, String name){
+    public void usedProcess(int seconds, String process, String name){
         if (data.contains(new ProcessData(process))){
             ProcessData data = this.data.get(this.data.indexOf(new ProcessData(process)));
-            data.currentlyUsedFor(minutes, name);
+            data.currentlyUsedFor(seconds, name);
         }else {
             ProcessData data = new ProcessData(process);
-            data.currentlyUsedFor(minutes, name);
+            data.currentlyUsedFor(seconds, name);
             this.data.add(data);
         }
     }

@@ -42,18 +42,18 @@ public class ProcessData {
         this.names = names;
     }
 
-    public void currentlyUsedFor(int minutes, String name){
-        if (!names.contains(name)) names.add(name);
+    public void currentlyUsedFor(int seconds, String name){
+        if(name != null) if (!names.contains(name)) names.add(name);
 
         Date date = Calendar.getInstance().getTime();
         if (usages.contains(new UsageData(date))){
             UsageData data = usages.get(usages.indexOf(new UsageData(date)));
 
             data.setLast(date);
-            data.setTotal(data.getTotal() + minutes);
+            data.setTotal(data.getTotal() + seconds);
         }else {
             UsageData data = new UsageData(date);
-            data.setTotal(minutes);
+            data.setTotal(seconds);
             usages.add(data);
         }
     }
